@@ -1,0 +1,75 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Menu Coffein" [level=1] [ref=e4]
+      - paragraph [ref=e5]: Pilih favoritmu, tambah ke keranjang, bayar tanpa antre.
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - heading "Kopi" [level=2] [ref=e8]
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - link "☕" [ref=e11] [cursor=pointer]:
+              - /url: /product/cmw1zc7zm00099yaancmw4tze
+            - generic [ref=e13]:
+              - link "Cappuccino" [ref=e14] [cursor=pointer]:
+                - /url: /product/cmw1zc7zm00099yaancmw4tze
+              - paragraph [ref=e15]: Espresso, susu steamed, foam tebal.
+              - generic [ref=e16]:
+                - generic [ref=e17]: Rp 25.000
+                - button "Tambah" [ref=e72]
+          - generic [ref=e19]:
+            - link "☕" [ref=e20] [cursor=pointer]:
+              - /url: /product/cmw1zc7zj00079yaao5zz60og
+            - generic [ref=e22]:
+              - link "Americano" [ref=e23] [cursor=pointer]:
+                - /url: /product/cmw1zc7zj00079yaao5zz60og
+              - paragraph [ref=e24]: Espresso double shot dengan air panas.
+              - generic [ref=e25]:
+                - generic [ref=e26]: Rp 18.000
+                - button "Tambah" [ref=e27]
+          - generic [ref=e28]:
+            - link "☕" [ref=e29] [cursor=pointer]:
+              - /url: /product/cmw1zc7zg00059yaaqs8mpu2y
+            - generic [ref=e31]:
+              - link "Kopi Susu Gula Aren" [ref=e32] [cursor=pointer]:
+                - /url: /product/cmw1zc7zg00059yaaqs8mpu2y
+              - paragraph [ref=e33]: Espresso, susu segar, dan gula aren cair.
+              - generic [ref=e34]:
+                - generic [ref=e35]: Rp 22.000
+                - button "✓ Ditambah" [active] [ref=e73]
+      - generic [ref=e37]:
+        - heading "Non-Kopi" [level=2] [ref=e38]
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - link "☕" [ref=e41] [cursor=pointer]:
+              - /url: /product/cmw1zc7zr000d9yaaevstbsjj
+            - generic [ref=e43]:
+              - link "Dark Chocolate" [ref=e44] [cursor=pointer]:
+                - /url: /product/cmw1zc7zr000d9yaaevstbsjj
+              - paragraph [ref=e45]: Cokelat pekat 70% dengan susu.
+              - generic [ref=e46]:
+                - generic [ref=e47]: Rp 24.000
+                - button "Tambah" [ref=e48]
+          - generic [ref=e49]:
+            - link "☕" [ref=e50] [cursor=pointer]:
+              - /url: /product/cmw1zc7zp000b9yaawckeft36
+            - generic [ref=e52]:
+              - link "Matcha Latte" [ref=e53] [cursor=pointer]:
+                - /url: /product/cmw1zc7zp000b9yaawckeft36
+              - paragraph [ref=e54]: Matcha premium diseduh dengan susu.
+              - generic [ref=e55]:
+                - generic [ref=e56]: Rp 26.000
+                - button "Tambah" [ref=e57]
+      - generic [ref=e58]:
+        - heading "Pastry" [level=2] [ref=e59]
+        - generic [ref=e61]:
+          - link "☕" [ref=e62] [cursor=pointer]:
+            - /url: /product/cmw1zc7zt000f9yaaobl408xt
+          - generic [ref=e64]:
+            - link "Butter Croissant" [ref=e65] [cursor=pointer]:
+              - /url: /product/cmw1zc7zt000f9yaaobl408xt
+            - paragraph [ref=e66]: Croissant renyah dengan butter premium.
+            - generic [ref=e67]:
+              - generic [ref=e68]: Rp 20.000
+              - button "Tambah" [ref=e69]
+  - alert [ref=e70]

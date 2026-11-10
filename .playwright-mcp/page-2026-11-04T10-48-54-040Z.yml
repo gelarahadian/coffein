@@ -1,0 +1,22 @@
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e9]
+  - generic [ref=f2e11]:
+    - paragraph [ref=f2e12]: 🎉
+    - heading "Terima kasih!" [level=1] [ref=f2e13]
+    - paragraph [ref=f2e14]: Pesanan CF-ZUK1SHDA sudah kami terima.
+    - generic [ref=f2e15]:
+      - list [ref=f2e16]:
+        - listitem [ref=f2e17]:
+          - generic [ref=f2e18]: Cappuccino × 1
+          - generic [ref=f2e19]: Rp 25.000
+        - listitem [ref=f2e20]:
+          - generic [ref=f2e21]: Kopi Susu Gula Aren × 1
+          - generic [ref=f2e22]: Rp 22.000
+      - generic [ref=f2e23]:
+        - generic [ref=f2e24]: Total
+        - generic [ref=f2e25]: Rp 47.000
+    - generic [ref=f2e26]:
+      - link "Lacak Status Pesanan" [ref=f2e27] [cursor=pointer]:
+        - /url: /order/CF-ZUK1SHDA
+      - link "Kembali ke Menu" [ref=f2e28] [cursor=pointer]:
+        - /url: /

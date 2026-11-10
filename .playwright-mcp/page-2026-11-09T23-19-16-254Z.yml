@@ -1,0 +1,46 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - banner [ref=f1e3]:
+      - generic [ref=f1e4]:
+        - link "Coffein." [ref=f1e5] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=f1e6]:
+          - link "Menu" [ref=f1e7] [cursor=pointer]:
+            - /url: /
+          - link "Keranjang 1" [ref=f1e94] [cursor=pointer]:
+            - /url: /cart
+            - text: Keranjang
+            - generic [ref=f1e95]: "1"
+    - main [ref=f1e9]:
+      - generic [ref=f1e104]:
+        - heading "Checkout" [level=1] [ref=f1e105]
+        - generic [ref=f1e106]:
+          - generic [ref=f1e107]:
+            - generic [ref=f1e108]:
+              - generic [ref=f1e109]: Nama
+              - textbox "Nama" [ref=f1e110]:
+                - /placeholder: Nama kamu
+            - generic [ref=f1e111]:
+              - generic [ref=f1e112]: Nomor WhatsApp
+              - textbox "Nomor WhatsApp" [ref=f1e113]:
+                - /placeholder: 08xxxxxxxxxx
+            - generic [ref=f1e114]:
+              - generic [ref=f1e115]: Tipe pesanan
+              - generic [ref=f1e116]:
+                - button "Takeaway" [pressed] [ref=f1e117] [cursor=pointer]
+                - button "Dine-in" [ref=f1e118] [cursor=pointer]
+          - generic [ref=f1e120]:
+            - heading "Ringkasan" [level=2] [ref=f1e121]
+            - list [ref=f1e122]:
+              - listitem [ref=f1e123]:
+                - generic [ref=f1e124]: Cappuccino × 1
+                - generic [ref=f1e125]: Rp 25.000
+            - generic [ref=f1e126]:
+              - generic [ref=f1e127]: Total
+              - generic [ref=f1e128]: Rp 25.000
+            - button "Pesan & Bayar" [ref=f1e129] [cursor=pointer]
+            - paragraph [ref=f1e130]: "Pembayaran via Mayar: QRIS, e-wallet, VA, kartu."
+    - contentinfo [ref=f1e82]:
+      - paragraph [ref=f1e83]: "Coffein Cafe: pesan, bayar, ambil, tanpa antre."
+  - button "Open Next.js Dev Tools" [ref=f1e89] [cursor=pointer]
+  - alert [ref=f1e93]

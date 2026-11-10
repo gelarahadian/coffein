@@ -1,0 +1,30 @@
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e9]
+  - generic [ref=f2e29]:
+    - generic [ref=f2e30]:
+      - generic [ref=f2e31]:
+        - generic [ref=f2e32]:
+          - paragraph [ref=f2e33]: Nomor pesanan
+          - paragraph [ref=f2e34]: CF-ZUK1SHDA
+        - generic [ref=f2e35]: Dibayar
+      - generic [ref=f2e36]:
+        - generic [ref=f2e37]:
+          - paragraph [ref=f2e38]: Nama
+          - paragraph [ref=f2e39]: Sari Melati
+        - generic [ref=f2e40]:
+          - paragraph [ref=f2e41]: Tipe
+          - paragraph [ref=f2e42]: Dine-in 🍽️
+      - list [ref=f2e43]:
+        - listitem [ref=f2e44]:
+          - generic [ref=f2e45]: Cappuccino × 1
+          - generic [ref=f2e46]: Rp 25.000
+        - listitem [ref=f2e47]:
+          - generic [ref=f2e48]: Kopi Susu Gula Aren × 1
+          - generic [ref=f2e49]: Rp 22.000
+      - generic [ref=f2e50]:
+        - generic [ref=f2e51]: Total
+        - generic [ref=f2e52]: Rp 47.000
+    - paragraph [ref=f2e53]:
+      - text: Halaman ini diperbarui otomatis.
+      - link "Kembali ke menu" [ref=f2e54] [cursor=pointer]:
+        - /url: /

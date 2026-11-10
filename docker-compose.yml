@@ -1,0 +1,59 @@
+# Produksi: postgres + api + web
+# Pakai: docker compose up -d --build
+# Catatan: postgres TIDAK diekspos ke host (internal saja).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-coffein}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-coffein}
+      POSTGRES_DB: ${POSTGRES_DB:-coffein}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-coffein} -d ${POSTGRES_DB:-coffein}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-coffein}:${POSTGRES_PASSWORD:-coffein}@postgres:5432/${POSTGRES_DB:-coffein}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET di .env produksi}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-12h}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@coffein.id}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      MAYAR_API_KEY: ${MAYAR_API_KEY:-}
+      MAYAR_BASE_URL: ${MAYAR_BASE_URL:-https://api.mayar.id}
+      MAYAR_WEBHOOK_SECRET: ${MAYAR_WEBHOOK_SECRET:-}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      SEED_ON_START: ${SEED_ON_START:-true}
+      PORT: 4000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata_prod:

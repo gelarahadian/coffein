@@ -1,0 +1,33 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - heading "Keranjang" [level=1] [ref=f1e3]
+    - generic [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - generic [ref=f1e6]: ☕
+        - generic [ref=f1e7]:
+          - link "Cappuccino" [ref=f1e8] [cursor=pointer]:
+            - /url: /product/cmw1zc7zm00099yaancmw4tze
+          - paragraph [ref=f1e9]: Rp 25.000 × 1
+        - generic [ref=f1e10]:
+          - button "Kurangi jumlah" [disabled] [ref=f1e11]: −
+          - generic [ref=f1e12]: "1"
+          - button "Tambah jumlah" [ref=f1e13]: +
+        - button "Hapus Cappuccino" [ref=f1e14]: ✕
+      - generic [ref=f1e15]:
+        - generic [ref=f1e16]: ☕
+        - generic [ref=f1e17]:
+          - link "Kopi Susu Gula Aren" [ref=f1e18] [cursor=pointer]:
+            - /url: /product/cmw1zc7zg00059yaaqs8mpu2y
+          - paragraph [ref=f1e19]: Rp 22.000 × 1
+        - generic [ref=f1e20]:
+          - button "Kurangi jumlah" [disabled] [ref=f1e21]: −
+          - generic [ref=f1e22]: "1"
+          - button "Tambah jumlah" [ref=f1e23]: +
+        - button "Hapus Kopi Susu Gula Aren" [ref=f1e24]: ✕
+    - generic [ref=f1e25]:
+      - generic [ref=f1e26]:
+        - generic [ref=f1e27]: Total
+        - generic [ref=f1e28]: Rp 47.000
+      - link "Lanjut ke Checkout" [ref=f1e29] [cursor=pointer]:
+        - /url: /checkout
+  - alert [ref=f1e30]

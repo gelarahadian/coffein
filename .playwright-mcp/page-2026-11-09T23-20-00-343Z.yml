@@ -1,0 +1,11 @@
+- main [ref=f3e3]:
+  - generic [ref=f3e5]:
+    - heading "Login Admin" [level=1] [ref=f3e6]
+    - generic [ref=f3e7]:
+      - generic [ref=f3e8]:
+        - generic [ref=f3e9]: Email
+        - textbox "Email" [ref=f3e10]
+      - generic [ref=f3e11]:
+        - generic [ref=f3e12]: Password
+        - textbox "Password" [ref=f3e13]
+      - button "Masuk" [ref=f3e14] [cursor=pointer]

@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e18] [cursor=pointer]
+  - alert [ref=e22]
+  - generic [ref=e23]:
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Panel Admin
+        - navigation [ref=e27]:
+          - link "Pesanan" [ref=e28] [cursor=pointer]:
+            - /url: /admin
+          - link "Produk" [ref=e29] [cursor=pointer]:
+            - /url: /admin/products
+      - button "Keluar" [ref=e30]
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - button "Semua" [ref=e33]
+        - button "Menunggu Bayar" [ref=e34]
+        - button "Dibayar" [ref=e35]
+        - button "Disiapkan" [ref=e36]
+        - button "Siap" [ref=e37]
+        - button "Selesai" [ref=e38]
+        - button "Dibatalkan" [ref=e39]
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: CF-ZUK1SHDA
+              - paragraph [ref=e45]: Sari Melati · 081298765432 · Dine-in
+            - generic [ref=e46]:
+              - generic [ref=e47]: Selesai
+              - generic [ref=e48]: Rp 47.000
+          - list [ref=e49]:
+            - listitem [ref=e50]: Cappuccino × 1
+            - listitem [ref=e51]: Kopi Susu Gula Aren × 1
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - paragraph [ref=e58]: CF-ZK86LRCH
+              - paragraph [ref=e59]: Uji Coba · 081234567890 · Takeaway
+            - generic [ref=e60]:
+              - generic [ref=e61]: Dibayar
+              - generic [ref=e62]: Rp 40.000
+          - list [ref=e63]:
+            - listitem [ref=e64]: Butter Croissant × 2
+          - generic [ref=e65]:
+            - button "Mulai Siapkan" [ref=e66]
+            - button "Batalkan" [ref=e67]

@@ -135,7 +135,14 @@ export default function OrderStatusPage() {
           <StatusBadge status={order.status} />
         </div>
 
-        {order.status === "PENDING" && (
+        {order.status === "PENDING" && order.paymentMethod === "CASH" && (
+          <p className="mt-6 rounded-md bg-accent-soft px-4 py-3 text-center text-sm font-medium text-coffee-900">
+            Silakan lakukan pembayaran di kasir dengan menunjukkan nomor pesanan
+            ini.
+          </p>
+        )}
+
+        {order.status === "PENDING" && order.paymentMethod !== "CASH" && (
           <p className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-coffee-700">
             <span
               aria-hidden="true"
@@ -181,7 +188,9 @@ export default function OrderStatusPage() {
           </span>
         </div>
 
-        {order.status === "PENDING" && order.paymentUrl && (
+        {order.status === "PENDING" &&
+          order.paymentMethod !== "CASH" &&
+          order.paymentUrl && (
           <a
             href={order.paymentUrl}
             className="mt-6 block rounded-md bg-accent py-3 text-center font-semibold text-white transition duration-150 hover:bg-accent-hover"

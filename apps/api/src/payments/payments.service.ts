@@ -29,6 +29,10 @@ export class PaymentsService {
   }
 
   async createPaymentLink(order: PaymentOrderRef): Promise<PaymentLink> {
+    if (order.paymentMethod === "CASH") {
+      return this.cashProvider.createPaymentLink(order);
+    }
+
     return this.provider.createPaymentLink(order);
   }
 

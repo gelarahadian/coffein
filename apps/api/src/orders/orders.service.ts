@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
@@ -9,6 +10,8 @@ import { PaymentsService } from "../payments/payments.service";
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly paymentsService: PaymentsService,
@@ -27,14 +30,10 @@ export class OrdersService {
     for (const item of dto.items) {
       const product = productMap.get(item.productId);
       if (!product) {
-        throw new BadRequestException(
-          `Produk ${item.productId} tidak ditemukan`,
-        );
+        throw new BadRequestException(`Produk ${item.productId} tidak ditemukan`);
       }
       if (!product.isAvailable) {
-        throw new BadRequestException(
-          `Produk ${product.name} sedang tidak tersedia`,
-        );
+        throw new BadRequestException(`Produk ${product.name} sedang tidak tersedia`);
       }
     }
 
@@ -52,6 +51,7 @@ export class OrdersService {
           customerName: dto.customerName,
           customerPhone: dto.customerPhone,
           orderType: dto.orderType,
+          paymentMethod: dto.paymentMethod,
           status: "PENDING",
           totalAmount,
           items: {
@@ -78,12 +78,20 @@ export class OrdersService {
         id: order.id,
         orderNumber: order.orderNumber,
         totalAmount: order.totalAmount,
+        paymentMethod: dto.paymentMethod,
       });
       paymentUrl = link.paymentUrl;
       providerPaymentId = link.providerPaymentId;
-    } catch (err) {
+    } catch (error) {
       // Order tetap dibuat (PENDING) tapi tanpa payment link — admin bisa follow up.
-      console.error("Gagal membuat payment link:", err);
+      this.logger.warn(
+        JSON.stringify({
+          event: "payment_link.fallback",
+          orderNumber: order.orderNumber,
+          paymentMethod: dto.paymentMethod,
+          error: error instanceof Error ? error.message : "unknown error",
+        }),
+      );
     }
 
     return this.prisma.order.update({
@@ -120,6 +128,24 @@ export class OrdersService {
     return this.prisma.order.update({
       where: { id },
       data: { status },
+      include: { items: true },
+    });
+  }
+
+  async markCashPaid(id: string) {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) {
+      throw new NotFoundException("Pesanan tidak ditemukan");
+    }
+    if (order.paymentMethod !== "CASH") {
+      throw new BadRequestException("Hanya order CASH yang bisa ditandai sebagai dibayar manual");
+    }
+    if (order.status !== "PENDING") {
+      throw new BadRequestException("Order sudah diproses");
+    }
+    return this.prisma.order.update({
+      where: { id },
+      data: { status: "PAID" },
       include: { items: true },
     });
   }

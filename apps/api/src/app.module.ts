@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AuthModule } from "./auth/auth.module";
@@ -8,6 +8,7 @@ import { PaymentsModule } from "./payments/payments.module";
 import { ApiEnvelopeInterceptor } from "./common/api-envelope.interceptor";
 import { ApiExceptionFilter } from "./common/api-exception.filter";
 import { HealthController } from "./health/health.controller";
+import { HttpLoggingMiddleware } from "./common/http-logging.middleware";
 
 @Module({
   imports: [
@@ -23,4 +24,8 @@ import { HealthController } from "./health/health.controller";
     { provide: APP_FILTER, useClass: ApiExceptionFilter },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(HttpLoggingMiddleware).forRoutes("*");
+  }
+}

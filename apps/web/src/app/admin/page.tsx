@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { adminListOrders, adminUpdateStatus } from "@/lib/admin-api";
+import { adminListOrders, adminUpdateStatus, adminMarkCashPaid } from "@/lib/admin-api";
 import { StatusBadge } from "@/components/status-badge";
 import { formatRupiah } from "@/lib/format";
 import type { Order, OrderStatus } from "@coffein/shared";
@@ -37,6 +37,7 @@ export default function AdminOrdersPage() {
   const [filter, setFilter] = useState<OrderStatus | "ALL">("ALL");
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [adminToken, setAdminToken] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -59,7 +60,17 @@ export default function AdminOrdersPage() {
   const handleStatus = async (id: string, status: OrderStatus) => {
     setBusyId(id);
     try {
-      await adminUpdateStatus(id, status);
+      if (status === "PAID") {
+        // Cek apakah order CASH, lalu gunakan endpoint yang sesuai
+        const order = orders.find((o) => o.id === id);
+        if (order?.paymentMethod === "CASH") {
+          await adminMarkCashPaid(id);
+        } else {
+          await adminUpdateStatus(id, status);
+        }
+      } else {
+        await adminUpdateStatus(id, status);
+      }
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengubah status");
@@ -133,21 +144,29 @@ export default function AdminOrdersPage() {
 
             {(NEXT_ACTIONS[order.status]?.length ?? 0) > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
-                {NEXT_ACTIONS[order.status].map((action) => (
-                  <button
-                    key={action.status}
-                    type="button"
-                    disabled={busyId === order.id}
-                    onClick={() => handleStatus(order.id, action.status)}
-                    className={`rounded-md px-4 py-2 text-sm font-semibold transition duration-150 disabled:cursor-not-allowed disabled:opacity-50 ${
-                      action.status === "CANCELLED"
-                        ? "border border-danger text-danger hover:bg-danger-soft"
-                        : "bg-accent text-white hover:bg-accent-hover"
-                    }`}
-                  >
-                    {action.label}
-                  </button>
-                ))}
+                {NEXT_ACTIONS[order.status].map((action) => {
+                  // Skip cash action label for non-CASH orders
+                  if (action.status === "PAID" && order.paymentMethod !== "CASH" && action.label.includes("Cash")) {
+                    return null;
+                  }
+                  
+                  const isCancelAction = action.status === "CANCELLED";
+                  const buttonClass = isCancelAction
+                    ? "border border-danger text-danger hover:bg-danger-soft"
+                    : "bg-accent text-white hover:bg-accent-hover";
+                  
+                  return (
+                    <button
+                      key={action.status}
+                      type="button"
+                      disabled={busyId === order.id}
+                      onClick={() => handleStatus(order.id, action.status)}
+                      className={`rounded-md px-4 py-2 text-sm font-semibold transition duration-150 disabled:cursor-not-allowed disabled:opacity-50 ${buttonClass}`}
+                    >
+                      {action.label}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

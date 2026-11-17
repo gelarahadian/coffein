@@ -15,6 +15,11 @@ export type OrderStatus = z.infer<typeof OrderStatusSchema>;
 export const OrderTypeSchema = z.enum(["TAKEAWAY", "DINE_IN"]);
 export type OrderType = z.infer<typeof OrderTypeSchema>;
 
+// ---------- Payment Method ----------
+
+export const PaymentMethodSchema = z.enum(["MIDTRANS", "CASH"]);
+export type PaymentMethod = z.infer<typeof PaymentMethodSchema>;
+
 // ---------- Category ----------
 
 export const CategorySchema = z.object({
@@ -59,6 +64,7 @@ export const OrderSchema = z.object({
   customerPhone: z.string().min(1),
   orderType: OrderTypeSchema,
   status: OrderStatusSchema,
+  paymentMethod: PaymentMethodSchema,
   items: z.array(OrderItemSchema),
   /** Total dalam rupiah (integer). */
   totalAmount: z.number().int().nonnegative(),
@@ -79,6 +85,7 @@ export const CreateOrderInputSchema = z.object({
   /** Nomor WhatsApp, format bebas tapi wajib diisi. */
   customerPhone: z.string().min(8).max(20),
   orderType: OrderTypeSchema,
+  paymentMethod: PaymentMethodSchema.default("MIDTRANS"),
   items: z.array(CreateOrderItemInputSchema).min(1).max(50),
 });
 export type CreateOrderInput = z.infer<typeof CreateOrderInputSchema>;

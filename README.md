@@ -53,14 +53,37 @@ jalan jika `SEED_ON_START=true`.
 | `SEED_ON_START` | api | `true` | Seed menu + admin saat start |
 | `NEXT_PUBLIC_API_URL` | web (build arg) | `http://localhost:4000` | URL API yang dipakai browser |
 
-### Pembayaran Mayar
+### Pembayaran Midtrans + Cash
 
-1. Buat akun Mayar + ambil API key.
-2. Set `PAYMENT_PROVIDER=mayar` dan `MAYAR_API_KEY` di `.env`.
-3. Daftarkan webhook Mayar ke `{APP_URL}` → API menerima event `payment.received`
-   di `POST /payments/webhook/mayar` untuk menandai pesanan PAID.
-4. Jika Mayar menyediakan secret signature, set `MAYAR_WEBHOOK_SECRET` agar
-   verifikasi signature aktif.
+**Pilihan 1: Midtrans (Sandbox Development)**
+1. Daftar akun di [Midtrans](https://midtrans.com) dan ambil Server Key untuk **sandbox** (bisa juga di Akun Production nanti).
+2. Set `PAYMENT_PROVIDER=midtrans`, `MIDTRANS_SERVER_KEY`, `MIDTRANS_SIGNATURE_SERVER_KEY`, dan `MIDTRANS_IS_PRODUCTION=false` di `.env`.
+   - `MIDTRANS_IS_PRODUCTION=false` = mode **sandbox** (development/testing).
+   - `MIDTRANS_IS_PRODUCTION=true` = mode **production** (lebih lanjut).
+3. Daftarkan webhook URL ke `{APP_URL}/payments/webhook/midtrans` di dashboard Midtrans (sandbox).
+4. Aktifkan metode pembayaran di dashboard Midtrans (QRIS, GoPay, ShopeePay, VA, kartu, dll) di sandbox environment.
+5. Lakukan testing pembayaran di sandbox Midtrans menggunakan kartu uji coba yang disediakan Midtrans.
+6. Saat ingin pindah ke produksi: atur `MIDTRANS_IS_PRODUCTION=true`, gunakan Server Key Production, dan daftarkan ulang webhook di domain produksi.
 
-Sampai API key tersedia, provider `mock` memungkinkan alur pembayaran lengkap
-via halaman `/mock-pay/[orderNumber]` (khusus development).
+**Pilihan 2: Cash (Bayar di tempat)**
+
+**Pilihan 2: Cash (Bayar di tempat)**
+1. Set `PAYMENT_PROVIDER=cash` di `.env`.
+2. Order dibuat dengan status PENDING dan paymentMethod=CASH.
+3. Admin menandai order sebagai PAID melalui dashboard admin (`/admin/orders/:id/cash-paid`).
+4. Tidak ada integrasi eksternal — cocok untuk pesanan offline/dinas.
+
+**Alur pembayaran default (Midtrans):**
+1. Pelanggan checkout → dinafikan ke hosted checkout Midtrans.
+2. Pilih metode: QRIS, e-wallet, VA, atau kartu.
+3. Midtrans webhook → order berubah status PAID.
+4. User dialihkan ke `/order/{orderNumber}` atau `/thanks/{orderNumber}`.
+
+**Alur pembayaran Cash:**
+1. Pelanggan checkout → memilih "Cash (Bayar di tempat)".
+2. Order dibuat: status PENDING, paymentUrl = halaman order sendiri.
+3. Admin lihat order di dashboard → klik "Tandai Dibayar (Cash)".
+4. Order berubah status PAID → stepper mulai (PREPARING → READY → COMPLETED).
+
+Saat `PAYMENT_PROVIDER=mock` digunakan (development), alur pembayaran
+melalui `/mock-pay/[orderNumber]` tetap tersedia untuk testing.

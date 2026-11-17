@@ -4,8 +4,9 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from "@nestjs/common";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 
 interface HttpExceptionBody {
   message?: string | string[];
@@ -17,8 +18,12 @@ interface HttpExceptionBody {
  */
 @Catch()
 export class ApiExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(ApiExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost): void {
-    const res = host.switchToHttp().getResponse<Response>();
+    const http = host.switchToHttp();
+    const res = http.getResponse<Response>();
+    const request = http.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = "Terjadi kesalahan internal";
@@ -33,6 +38,19 @@ export class ApiExceptionFilter implements ExceptionFilter {
       } else if (typeof body.message === "string") {
         message = body.message;
       }
+    }
+
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      this.logger.error(
+        JSON.stringify({
+          event: "http.exception",
+          method: request.method,
+          path: request.path,
+          statusCode: status,
+          message,
+        }),
+        exception instanceof Error ? exception.stack : undefined,
+      );
     }
 
     res.status(status).json({

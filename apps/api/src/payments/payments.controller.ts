@@ -3,11 +3,8 @@ import {
   Controller,
   ForbiddenException,
   Post,
-  Req,
   UsePipes,
 } from "@nestjs/common";
-import type { Request } from "express";
-import { createHmac } from "node:crypto";
 import { z } from "zod";
 import { PaymentsService } from "./payments.service";
 import { ZodValidationPipe } from "../common/zod-validation.pipe";
@@ -16,21 +13,41 @@ const MockPaySchema = z.object({
   orderNumber: z.string().min(1),
 });
 
+const MidtransWebhookSchema = z.object({
+  order_id: z.string().min(1),
+  transaction_status: z.string().min(1),
+  gross_amount: z.union([z.string(), z.number()]),
+  transaction_id: z.string().optional(),
+  payment_type: z.string().optional(),
+  fraud_status: z.string().optional(),
+  status_code: z.string().optional(),
+  signature_key: z.string().optional(),
+});
+
 @Controller("payments")
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   /**
-   * Webhook Mayar. Konfigurasi URL ini di dashboard Mayar
-   * (Integration → Webhook). Event yang diproses: payment.received.
+   * Webhook Midtrans. Konfigurasi URL ini di dashboard Midtrans
+   * (Settings → Configuration → Payment Notification URL).
+   * Event yang diproses: settlement, capture → PAID.
    */
-  @Post("webhook/mayar")
-  async mayarWebhook(@Req() req: Request & { rawBody?: Buffer }, @Body() body: unknown) {
-    this.verifySignature(req);
-    const event = this.paymentsService.parseMayarWebhook(body);
-    if (event.event !== "payment.received") {
-      return { received: true, processed: false };
+  @Post("webhook/midtrans")
+  @UsePipes(new ZodValidationPipe(MidtransWebhookSchema))
+  async midtransWebhook(@Body() body: unknown) {
+    // Verifikasi signature key
+    if (!this.paymentsService.verifyMidtransSignature(body as Record<string, unknown>)) {
+      throw new ForbiddenException("Signature webhook tidak valid");
     }
+
+    const event = this.paymentsService.parseMidtransWebhook(body);
+
+    // Hanya proses payment.received (settlement/capture)
+    if (event.event !== "payment.received") {
+      return { received: true, processed: false, status: event.event };
+    }
+
     const order = await this.paymentsService.handlePaymentReceived(event);
     return { received: true, processed: true, orderNumber: order.orderNumber, status: order.status };
   }
@@ -41,9 +58,9 @@ export class PaymentsController {
   @Post("mock/pay")
   @UsePipes(new ZodValidationPipe(MockPaySchema))
   async mockPay(@Body() dto: { orderNumber: string }) {
-    if (process.env.PAYMENT_PROVIDER === "mayar") {
+    if (process.env.PAYMENT_PROVIDER !== "mock") {
       throw new ForbiddenException(
-        "Endpoint mock dinonaktifkan saat PAYMENT_PROVIDER=mayar",
+        "Endpoint mock hanya aktif saat PAYMENT_PROVIDER=mock",
       );
     }
     const order = await this.paymentsService.handlePaymentReceived({
@@ -52,29 +69,5 @@ export class PaymentsController {
       raw: { source: "mock" },
     });
     return { orderNumber: order.orderNumber, status: order.status };
-  }
-
-  /**
-   * Verifikasi signature webhook (best-effort).
-   * Docs Mayar klasik belum mempublikasikan skema signing final;
-   * aktif hanya jika MAYAR_WEBHOOK_SECRET diisi.
-   */
-  private verifySignature(req: Request & { rawBody?: Buffer }): void {
-    const secret = process.env.MAYAR_WEBHOOK_SECRET;
-    if (!secret) {
-      return;
-    }
-    const signature =
-      (req.headers["x-mayar-signature"] as string | undefined) ??
-      (req.headers["x-callback-signature"] as string | undefined);
-    if (!signature || !req.rawBody) {
-      throw new ForbiddenException("Signature webhook tidak ada");
-    }
-    const expected = createHmac("sha256", secret)
-      .update(req.rawBody)
-      .digest("hex");
-    if (expected !== signature) {
-      throw new ForbiddenException("Signature webhook tidak valid");
-    }
   }
 }

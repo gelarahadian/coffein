@@ -10,6 +10,7 @@ import { formatRupiah } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 type OrderType = "TAKEAWAY" | "DINE_IN";
+type PaymentMethod = "MIDTRANS" | "CASH";
 
 export default function CheckoutPage() {
   const { items, total, clear } = useCart();
@@ -18,6 +19,7 @@ export default function CheckoutPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [orderType, setOrderType] = useState<OrderType>("TAKEAWAY");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("MIDTRANS");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +48,7 @@ export default function CheckoutPage() {
         customerName,
         customerPhone,
         orderType,
+        paymentMethod,
         items: items.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
@@ -53,7 +56,7 @@ export default function CheckoutPage() {
       });
       clear();
       if (order.paymentUrl) {
-        // Bisa berupa hosted page Mayar (eksternal) atau mock-pay (internal).
+        // Bisa berupa hosted page Midtrans (eksternal) atau mock-pay (internal) atau halaman order (CASH)
         window.location.assign(order.paymentUrl);
       } else {
         router.push(`/order/${order.orderNumber}`);
@@ -123,6 +126,34 @@ export default function CheckoutPage() {
                   aria-pressed={orderType === opt.value}
                   className={`rounded-md border px-4 py-3 text-sm font-medium transition duration-150 ${
                     orderType === opt.value
+                      ? "border-coffee-900 bg-coffee-900 text-white"
+                      : "border-line bg-surface text-coffee-700 hover:border-coffee-300"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <span className="mb-1 block text-sm font-medium text-coffee-900">
+              Metode pembayaran
+            </span>
+            <div className="grid grid-cols-2 gap-3">
+              {(
+                [
+                  { value: "MIDTRANS", label: "Midtrans (QRIS/e-wallet/VA)" },
+                  { value: "CASH", label: "Cash (Bayar di tempat)" },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setPaymentMethod(opt.value)}
+                  aria-pressed={paymentMethod === opt.value}
+                  className={`rounded-md border px-4 py-3 text-sm font-medium transition duration-150 ${
+                    paymentMethod === opt.value
                       ? "border-coffee-900 bg-coffee-900 text-white"
                       : "border-line bg-surface text-coffee-700 hover:border-coffee-300"
                   }`}

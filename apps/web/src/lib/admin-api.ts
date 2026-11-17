@@ -92,6 +92,17 @@ export function adminUpdateStatus(
   });
 }
 
+// ---------- Admin payment endpoints ----------
+
+export function adminMarkCashPaid(
+  id: string,
+): Promise<{ success: boolean; orderNumber: string; status: OrderStatus }> {
+  return adminFetch<{ success: boolean; orderNumber: string; status: OrderStatus }>(
+    `/admin/orders/${id}/cash-paid`,
+    { method: "POST" }
+  );
+}
+
 export function adminListProducts(): Promise<Product[]> {
   return adminFetch<Product[]>("/products");
 }

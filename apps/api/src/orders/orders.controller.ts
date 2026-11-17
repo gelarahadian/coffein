@@ -27,7 +27,13 @@ export class OrdersController {
 
   @Post("orders")
   create(
-    @Body(new ZodValidationPipe(CreateOrderInputSchema)) dto: { customerName: string; customerPhone: string; orderType: "TAKEAWAY" | "DINE_IN"; items: { productId: string; quantity: number }[] },
+    @Body(new ZodValidationPipe(CreateOrderInputSchema)) dto: {
+      customerName: string;
+      customerPhone: string;
+      orderType: "TAKEAWAY" | "DINE_IN";
+      paymentMethod: "MIDTRANS" | "CASH";
+      items: { productId: string; quantity: number }[];
+    },
   ) {
     return this.ordersService.create(dto);
   }
@@ -54,5 +60,14 @@ export class OrdersController {
     body: { status: "PENDING" | "PAID" | "PREPARING" | "READY" | "COMPLETED" | "CANCELLED" },
   ) {
     return this.ordersService.updateStatus(id, body.status);
+  }
+
+  @Post("admin/orders/:id/cash-paid")
+  @UseGuards(JwtAuthGuard)
+  async markCashPaid(
+    @Param("id") id: string,
+  ) {
+    const order = await this.ordersService.markCashPaid(id);
+    return order;
   }
 }

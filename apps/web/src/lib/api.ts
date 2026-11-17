@@ -59,6 +59,7 @@ export interface CreateOrderPayload {
   customerName: string;
   customerPhone: string;
   orderType: "TAKEAWAY" | "DINE_IN";
+  paymentMethod: "MIDTRANS" | "CASH";
   items: { productId: string; quantity: number }[];
 }
 

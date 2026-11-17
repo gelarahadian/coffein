@@ -21,6 +21,11 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum PaymentMethod {
+  MIDTRANS
+  CASH
+}
+
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique
@@ -47,19 +52,20 @@ model Product {
 }
 
 model Order {
-  id                String      @id @default(cuid())
-  orderNumber       String      @unique
+  id                String        @id @default(cuid())
+  orderNumber       String        @unique
   customerName      String
   customerPhone     String
   orderType         OrderType
-  status            OrderStatus @default(PENDING)
+  status            OrderStatus   @default(PENDING)
+  paymentMethod     PaymentMethod @default(MIDTRANS)
   // Total dalam rupiah (integer)
   totalAmount       Int
   paymentUrl        String?
   providerPaymentId String?
   items             OrderItem[]
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   @@index([status])
 }
